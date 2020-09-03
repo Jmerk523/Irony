@@ -49,11 +49,26 @@ namespace Irony.Parsing {
       }
     }
 
-    internal void Reset() {
+    protected void Reset() {
       Context.Reset(); 
       Scanner.Reset(); 
     }
 
+    protected void Reset(ParseTree tree, IEnumerable<ParseTreeNode> stack)
+    {
+      Reset();
+      Context.CurrentParseTree = tree;
+      Context.ParserStack.Clear();
+      foreach (var node in stack)
+      {
+        Context.ParserStack.Push(node);
+        Context.CurrentParserState = node.State;
+      }
+    }
+
+    protected internal virtual void CreateTokenFilters(LanguageData language, TokenFilterList filters, ParsingContext context)
+    {
+    }
 
     public ParseTree Parse(string sourceText) {
       return Parse(sourceText, "Source");
@@ -61,15 +76,18 @@ namespace Irony.Parsing {
 
     public ParseTree Parse(string sourceText, string fileName) {
       SourceLocation loc = default(SourceLocation);
-      Reset();
-/*      if (Context.Status == ParserStatus.AcceptedPartial) {
+      if (Context.Status == ParserStatus.AcceptedPartial)
+      {
         var oldLoc = Context.Source.Location;
         loc = new SourceLocation(oldLoc.Position, oldLoc.Line + 1, 0);
-      } else {
-      }*/
-      Context.Source = new SourceStream(sourceText, this.Language.Grammar.CaseSensitive, Context.TabWidth, loc); 
-      Context.CurrentParseTree = new ParseTree(sourceText, fileName);
-      Context.Status = ParserStatus.Parsing;
+      }
+      return Parse(new SourceStream(sourceText, this.Language.Grammar.CaseSensitive, Context.TabWidth, loc), fileName);
+    }
+
+    protected ParseTree Parse(ISourceStream source, string fileName) {
+      Reset();
+      Context.Source = source;
+      Context.CurrentParseTree = new ParseTree(null, fileName);
       var sw = new Stopwatch();
       sw.Start(); 
       ParseAll();
@@ -94,7 +112,7 @@ namespace Irony.Parsing {
       return parseTree;
     }
 
-    private void ParseAll() {
+    protected void ParseAll() {
       //main loop
       Context.Status = ParserStatus.Parsing;
       while (Context.Status == ParserStatus.Parsing) {
@@ -136,7 +154,7 @@ namespace Irony.Parsing {
       action.Execute(Context);
     }
 
-    internal ParserAction GetNextAction() {
+    protected internal virtual ParserAction GetNextAction() {
       var currState = Context.CurrentParserState;
       var currInput = Context.CurrentParserInput;
 

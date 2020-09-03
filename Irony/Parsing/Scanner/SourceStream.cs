@@ -19,7 +19,6 @@ namespace Irony.Parsing {
   public class SourceStream : ISourceStream {
     StringComparison _stringComparison;
     int _tabWidth;
-    char[] _chars;
     int _textLength;
 
     public SourceStream(string text, bool caseSensitive, int tabWidth) : this(text, caseSensitive, tabWidth, new SourceLocation()) {
@@ -27,8 +26,7 @@ namespace Irony.Parsing {
     
     public SourceStream(string text, bool caseSensitive, int tabWidth, SourceLocation initialLocation) {
       _text = text;
-      _textLength = _text.Length; 
-      _chars = Text.ToCharArray(); 
+      _textLength = _text.Length;
       _stringComparison = caseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
       _tabWidth = tabWidth; 
       _location = initialLocation;
@@ -41,6 +39,10 @@ namespace Irony.Parsing {
     public string Text {
       get { return _text; } 
     } string _text;
+
+    public int Length {
+      get { return _text.Length; }
+    }
 
     public int Position {
       get { return _location.Position; }
@@ -66,7 +68,7 @@ namespace Irony.Parsing {
       get {
         if (_previewPosition >= _textLength) 
           return '\0';
-        return _chars[_previewPosition];
+        return _text[_previewPosition];
       }
     }
 
@@ -74,7 +76,7 @@ namespace Irony.Parsing {
       [System.Diagnostics.DebuggerStepThrough]
       get {
         if (_previewPosition + 1 >= _textLength) return '\0';
-        return _chars[_previewPosition + 1];
+        return _text[_previewPosition + 1];
       }
     }
 
@@ -111,7 +113,7 @@ namespace Irony.Parsing {
       var until = _previewPosition;
       if (until > _textLength) until = _textLength;
       var p = _location.Position;
-      string text = Text.Substring(p, until - p);
+      string text = _text.Substring(p, until - p);
       return text;
     }
 
@@ -140,7 +142,7 @@ namespace Irony.Parsing {
       while(p <  newPosition) {
         if (p >= _textLength)
           break;
-        var curr = _chars[p];
+        var curr = _text[p];
         switch (curr) {
           case '\n': line++; col = 0; break;
           case '\r': break; 
@@ -152,7 +154,33 @@ namespace Irony.Parsing {
       Location = new SourceLocation(p, line, col); 
     }
 
+    public char GetCharAt(int index) {
+      return _text[index];
+    }
 
+    public string GetText(SourceSpan span) {
+      return _text.Substring(span.Location.Position, span.Length);
+    }
+
+    public string GetText(int offset, int length)
+    {
+      return _text.Substring(offset, length);
+    }
+
+    public int IndexOf(string str, int startIndex, int count, StringComparison comparison)
+    {
+      return _text.IndexOf(str, startIndex, count, comparison);
+    }
+
+    public int IndexOf(char chr, int startIndex, int count)
+    {
+      return _text.IndexOf(chr, startIndex, count);
+    }
+
+    public int IndexOfAny(char[] anyOf, int startIndex, int count)
+    {
+      return _text.IndexOfAny(anyOf, startIndex, count);
+    }
   }//class
 
 }//namespace

@@ -22,9 +22,9 @@ namespace Irony.Parsing {
     protected override string ReadBody(ParsingContext context, ISourceStream source) {
       if (!source.MatchSymbol(StartSymbol)) return null; //this will result in null returned from TryMatch, no token
       var start = source.Location.Position + StartSymbol.Length;
-      var end = source.Text.IndexOf(EndSymbol, start);
+      var end = source.IndexOf(EndSymbol, start);
       if (end < 0) return null;
-      var body = source.Text.Substring(start, end - start);
+      var body = source.GetText(start, end - start);
       source.PreviewPosition = end + EndSymbol.Length; //move beyond the end of EndSymbol
       return body; 
     }

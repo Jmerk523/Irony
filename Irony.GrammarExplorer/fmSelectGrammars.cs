@@ -63,10 +63,18 @@ namespace Irony.GrammarExplorer {
         MessageBox.Show("Failed to load assembly: " + ex.Message);
         return null;
       }
-      var types = asm.GetTypes();
+      Type[] types;
+      try
+      {
+        types = asm.GetTypes();
+      }
+      catch (ReflectionTypeLoadException le)
+      {
+        types = le.Types;
+      }
       var grammars = new GrammarItemList();
       foreach (Type t in types) {
-        if (t.IsAbstract) continue;
+        if (t == null || t.IsAbstract) continue;
         if (!t.IsSubclassOf(typeof(Grammar))) continue;
         grammars.Add(new GrammarItem(t, assemblyPath));
       }

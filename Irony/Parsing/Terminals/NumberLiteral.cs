@@ -230,7 +230,7 @@ namespace Irony.Parsing {
       int end = source.PreviewPosition;
       if (!foundDigits) 
         return false; 
-      details.Body = source.Text.Substring(start, end - start);
+      details.Body = source.GetText(start, end - start);
       return true;
     }
 

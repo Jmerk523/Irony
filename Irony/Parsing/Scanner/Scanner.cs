@@ -41,6 +41,7 @@ namespace Irony.Parsing {
       //chain all token filters
       Context.TokenFilters.Clear();
       _grammar.CreateTokenFilters(Data.Language, Context.TokenFilters);
+      parser.CreateTokenFilters(Data.Language, Context.TokenFilters, Context);
       foreach (TokenFilter filter in Context.TokenFilters) {
         tokenStream = filter.BeginFiltering(Context, tokenStream);
       }

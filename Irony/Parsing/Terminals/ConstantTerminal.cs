@@ -39,11 +39,10 @@ namespace Irony.Parsing {
     }
 
     public override Token TryMatch(ParsingContext context, ISourceStream source) {
-      string text = source.Text;
       foreach (var entry in Constants) {
         source.PreviewPosition = source.Position;
         var constant = entry.Key;
-        if (source.PreviewPosition + constant.Length > text.Length) continue;
+        if (source.PreviewPosition + constant.Length > source.Length) continue;
         if (source.MatchSymbol(constant)) {
           source.PreviewPosition += constant.Length;
           if (!this.Grammar.IsWhitespaceOrDelimiter(source.PreviewChar))

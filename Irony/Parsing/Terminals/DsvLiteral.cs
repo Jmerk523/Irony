@@ -58,11 +58,11 @@ namespace Irony.Parsing {
       StringBuilder sb = null;
       var from = source.Location.Position + 1; //skip initial double quote
       while(true) {
-        var until  = source.Text.IndexOf(dQuoute, from);
+        var until  = source.IndexOf(dQuoute, from);
         if (until < 0)
           throw new Exception(Resources.ErrDsvNoClosingQuote); // "Could not find a closing quote for quoted value."
         source.PreviewPosition = until; //now points at double-quote
-        var piece = source.Text.Substring(from, until - from);
+        var piece = source.GetText(from, until - from);
         source.PreviewPosition++; //move after double quote
         if (source.PreviewChar != dQuoute && sb == null)
           return piece; //quick path - if sb (string builder) was not created yet, we are looking at the very first segment;
@@ -80,11 +80,11 @@ namespace Irony.Parsing {
 
     private string ReadNotQuotedBody(ParsingContext context, ISourceStream source) {
       var startPos = source.Location.Position;
-      var sepPos = source.Text.IndexOfAny(_terminators, startPos);
+      var sepPos = source.IndexOfAny(_terminators, startPos);
       if (sepPos < 0)
-        sepPos = source.Text.Length;
+        sepPos = source.Length;
       source.PreviewPosition = sepPos;
-      var valueText = source.Text.Substring(startPos, sepPos - startPos);
+      var valueText = source.GetText(startPos, sepPos - startPos);
       return valueText;
     }
 

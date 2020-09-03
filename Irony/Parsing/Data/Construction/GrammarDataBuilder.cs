@@ -43,7 +43,7 @@ namespace Irony.Parsing.Construction {
 
     private void CreateAugmentedRoots() {
       _grammarData.AugmentedRoot = CreateAugmentedRoot(_grammar.Root); 
-      foreach(var snippetRoot in _grammar.SnippetRoots) 
+      foreach(var snippetRoot in _grammar.SnippetRoots)
         _grammarData.AugmentedSnippetRoots.Add(CreateAugmentedRoot(snippetRoot));        
     }
 
@@ -83,6 +83,14 @@ namespace Irony.Parsing.Construction {
       }
       if (nt.Rule == null)
         _language.Errors.AddAndThrow(GrammarErrorLevel.Error, null, Resources.ErrNtRuleIsNull, nt.Name);
+
+      if (nt.ErrorRule != null)
+      {
+        var aug = CreateAugmentedRoot(nt);
+        _grammarData.AugmentedSnippetRoots.Add(aug);
+        CollectTermsRecursive(aug);
+      }
+
       //check all child elements
       foreach (BnfTermList elemList in nt.Rule.Data)
         for (int i = 0; i < elemList.Count; i++) {

@@ -54,6 +54,11 @@ namespace Irony.Parsing {
       IsError = token.IsError(); 
     }
 
+    public ParseTreeNode(ParseTreeNode clone) : this(clone.State)
+    {
+      Term = clone.Term;
+    }
+
     public ParseTreeNode(ParserState initialState) : this() {
       State = initialState;
     }

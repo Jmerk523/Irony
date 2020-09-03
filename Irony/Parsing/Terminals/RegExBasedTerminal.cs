@@ -57,8 +57,8 @@ namespace Irony.Parsing {
     }
 
     public override Token TryMatch(ParsingContext context, ISourceStream source) {
-      Match m = _expression.Match(source.Text, source.PreviewPosition);
-      if (!m.Success || m.Index != source.PreviewPosition) 
+      Match m = _expression.Match(source.GetRestOfLine(source.PreviewPosition));
+      if (!m.Success || m.Index != 0) 
         return null;
       source.PreviewPosition += m.Length;
       return source.CreateToken(this.OutputTerminal); 

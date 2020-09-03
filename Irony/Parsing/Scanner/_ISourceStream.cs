@@ -25,7 +25,22 @@ namespace Irony.Parsing {
     /// <summary>
     /// Returns the source text
     /// </summary>
-    string Text { get; } 
+    [Obsolete("Inefficient")]
+    string Text { get; }
+
+    int Length { get; }
+
+    char GetCharAt(int index);
+
+    string GetText(SourceSpan span);
+
+    string GetText(int offset, int length);
+
+    int IndexOf(string str, int startIndex, int count, StringComparison comparison);
+
+    int IndexOf(char chr, int startIndex, int count);
+
+    int IndexOfAny(char[] anyOf, int startIndex, int count);
 
     /// <summary>
     /// Gets or sets the start location (position, row, column) of the new token
@@ -82,5 +97,33 @@ namespace Irony.Parsing {
 
   }//interface
 
+  public static class SourceStreamExtensions
+  {
+    private static readonly char[] eol = new[] { '\r', '\n' };
 
+    public static int IndexOf(this ISourceStream source, string str, int index, StringComparison comparison = StringComparison.Ordinal)
+    {
+      return source.IndexOf(str, index, source.Length - index, comparison);
+    }
+
+    public static int IndexOf(this ISourceStream source, char chr, int index)
+    {
+      return source.IndexOf(chr, index, source.Length - index);
+    }
+
+    public static int IndexOfAny(this ISourceStream source, char[] anyOf, int index)
+    {
+      return source.IndexOfAny(anyOf, index, source.Length - index);
+    }
+
+    public static string GetRestOfLine(this ISourceStream source, int position)
+    {
+      var endIndex = source.IndexOfAny(eol, position);
+      if (endIndex < 0)
+      {
+        endIndex = source.Length;
+      }
+      return source.GetText(position, endIndex - position);
+    }
+  }
 }

@@ -73,7 +73,7 @@ namespace Irony.Parsing {
     public override Token TryMatch(ParsingContext context, ISourceStream source) {
       while (true) {
         //Find next position
-        var newPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition + 1);
+        var newPos = source.IndexOfAny(_stopChars, source.PreviewPosition + 1);
         //we either didn't find it
         if (newPos == -1)
           return context.CreateErrorToken(Resources.ErrNoEndForRegex);// "No end symbol for regex literal." 

@@ -182,10 +182,10 @@ namespace Irony.Parsing {
       //1. Find the string end
       // first get the position of the next line break; we are interested in it to detect malformed string, 
       //  therefore do it only if linebreak is NOT allowed; if linebreak is allowed, set it to -1 (we don't care).  
-      int nlPos = lineBreakAllowed ? -1 : source.Text.IndexOf('\n', source.PreviewPosition);
+      int nlPos = lineBreakAllowed ? -1 : source.IndexOf('\n', source.PreviewPosition);
       //fix by ashmind for EOF right after opening symbol
       while (true) {
-        int endPos = source.Text.IndexOf(endQuoteSymbol, source.PreviewPosition);
+        int endPos = source.IndexOf(endQuoteSymbol, source.PreviewPosition);
         //Check for partial token in line-scanning mode
         if (endPos < 0 && details.PartialOk && lineBreakAllowed) {
           ProcessPartialBody(source, details); 
@@ -205,7 +205,7 @@ namespace Irony.Parsing {
           return true; 
 
         //We found EndSymbol - check if it is escaped; if yes, skip it and continue search
-        if (escapeEnabled && IsEndQuoteEscaped(source.Text, endPos)) {
+        if (escapeEnabled && IsEndQuoteEscaped(source, endPos)) {
           source.PreviewPosition = endPos + endQuoteSymbol.Length;
           continue; //searching for end symbol
         }
@@ -219,15 +219,15 @@ namespace Irony.Parsing {
         
         //Ok, this is normal endSymbol that terminates the string. 
         // Advance source position and get out from the loop
-        details.Body = source.Text.Substring(start, endPos - start);
+        details.Body = source.GetText(start, endPos - start);
         source.PreviewPosition = endPos + endQuoteSymbol.Length;
         return true; //if we come here it means we're done - we found string end.
       }  //end of loop to find string end; 
     }
     private void ProcessPartialBody(ISourceStream source, CompoundTokenDetails details) {
       int from = source.PreviewPosition;
-      source.PreviewPosition = source.Text.Length;
-      details.Body = source.Text.Substring(from, source.PreviewPosition - from);
+      source.PreviewPosition = source.Length;
+      details.Body = source.GetText(from, source.PreviewPosition - from);
       details.IsPartial = true;
     }
     
@@ -256,10 +256,10 @@ namespace Irony.Parsing {
           details.TypeCodes = new TypeCode[] { TypeCode.Char }; 
     }
 
-    private bool IsEndQuoteEscaped(string text, int quotePosition) {
+    private bool IsEndQuoteEscaped(ISourceStream text, int quotePosition) {
       bool escaped = false;
       int p = quotePosition - 1;
-      while (p > 0 && text[p] == EscapeChar) {
+      while (p > 0 && text.GetCharAt(p) == EscapeChar) {
         escaped = !escaped;
         p--;
       }

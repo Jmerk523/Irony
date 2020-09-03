@@ -30,7 +30,7 @@ namespace Irony.Parsing {
 
     protected override string ReadBody(ParsingContext context, ISourceStream source) {
       source.PreviewPosition = source.Location.Position + Length;
-      var body = source.Text.Substring(source.Location.Position, Length);
+      var body = source.GetText(source.Location.Position, Length);
       return body; 
     }
 

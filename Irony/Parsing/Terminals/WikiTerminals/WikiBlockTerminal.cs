@@ -26,14 +26,14 @@ namespace Irony.Parsing {
     public override Token TryMatch(ParsingContext context, ISourceStream source) {
       if (!source.MatchSymbol(OpenTag)) return null;
       source.PreviewPosition += OpenTag.Length;
-      var endPos = source.Text.IndexOf(CloseTag, source.PreviewPosition);
+      var endPos = source.IndexOf(CloseTag, source.PreviewPosition);
       string content; 
       if(endPos > 0) {
-        content = source.Text.Substring(source.PreviewPosition, endPos - source.PreviewPosition); 
+        content = source.GetText(source.PreviewPosition, endPos - source.PreviewPosition); 
         source.PreviewPosition = endPos + CloseTag.Length;
       } else {
-        content = source.Text.Substring(source.PreviewPosition, source.Text.Length - source.PreviewPosition); 
-        source.PreviewPosition = source.Text.Length;
+        content = source.GetText(source.PreviewPosition, source.Length - source.PreviewPosition); 
+        source.PreviewPosition = source.Length;
       }
       var token = source.CreateToken(this.OutputTerminal, content); 
       return token;      

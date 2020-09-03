@@ -27,12 +27,15 @@ namespace Irony.Parsing {
     public long ConstructionTime;
     public bool AstDataVerified;
 
-    public LanguageData(Grammar grammar) {
+    public LanguageData(Grammar grammar, bool construct = true) {
       Grammar = grammar;
       GrammarData = new GrammarData(this);
       ParserData = new ParserData(this);
       ScannerData = new ScannerData(this);
-      ConstructAll(); 
+      if (construct)
+      {
+        ConstructAll();
+      }
     }
     public void ConstructAll() {
       var builder = new LanguageDataBuilder(this);

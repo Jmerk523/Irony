@@ -42,9 +42,9 @@ namespace Irony.Parsing {
         source.PreviewPosition += 2; 
         return source.CreateToken(this.OutputTerminal, value);  
       }
-      var stopIndex = source.Text.IndexOfAny(_stopChars, source.Location.Position + 1);
+      var stopIndex = source.IndexOfAny(_stopChars, source.Location.Position + 1);
       if (stopIndex == source.Location.Position) return null; 
-      if (stopIndex < 0) stopIndex = source.Text.Length; 
+      if (stopIndex < 0) stopIndex = source.Length; 
       source.PreviewPosition = stopIndex;
       return source.CreateToken(this.OutputTerminal);
     }//method

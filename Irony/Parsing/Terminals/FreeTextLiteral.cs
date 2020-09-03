@@ -85,15 +85,15 @@ namespace Irony.Parsing {
       var startPos = source.PreviewPosition;
       var termLen = _singleTerminator.Length;
       var stringComp = Grammar.CaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
-      int termPos = source.Text.IndexOf(_singleTerminator, startPos, stringComp);
+      int termPos = source.IndexOf(_singleTerminator, startPos, stringComp);
       if (termPos < 0 && IsSet(FreeTextOptions.AllowEof))
-        termPos = source.Text.Length;
+        termPos = source.Length;
       if (termPos < 0)
         return context.CreateErrorToken(Resources.ErrFreeTextNoEndTag, _singleTerminator);
       var textEnd = termPos;
       if (IsSet(FreeTextOptions.IncludeTerminator))
         textEnd += termLen;
-      var tokenText = source.Text.Substring(startPos, textEnd - startPos);
+      var tokenText = source.GetText(startPos, textEnd - startPos);
       if (string.IsNullOrEmpty(tokenText) && (this.FreeTextOptions & Parsing.FreeTextOptions.AllowEmpty) == 0)
         return null; 
       // The following line is a fix submitted by user rmcase
@@ -105,15 +105,15 @@ namespace Irony.Parsing {
       StringBuilder tokenText = new StringBuilder();
       while (true) {
         //Find next position of one of stop chars
-        var nextPos = source.Text.IndexOfAny(_stopChars, source.PreviewPosition);
+        var nextPos = source.IndexOfAny(_stopChars, source.PreviewPosition);
         if(nextPos == -1) {
           if(IsSet(FreeTextOptions.AllowEof)) {
-            source.PreviewPosition = source.Text.Length;
+            source.PreviewPosition = source.Length;
             return source.CreateToken(this.OutputTerminal);
           }  else
             return null;
         }
-        var newText = source.Text.Substring(source.PreviewPosition, nextPos - source.PreviewPosition);
+        var newText = source.GetText(source.PreviewPosition, nextPos - source.PreviewPosition);
         tokenText.Append(newText);
         source.PreviewPosition = nextPos;
         //if it is escape, add escaped text and continue search

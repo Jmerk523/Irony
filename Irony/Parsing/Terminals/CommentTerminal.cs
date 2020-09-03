@@ -68,7 +68,7 @@ namespace Irony.Parsing {
     }
 
     private Token CreateIncompleteToken(ParsingContext context, ISourceStream source) {
-      source.PreviewPosition = source.Text.Length;
+      source.PreviewPosition = source.Length;
       Token result = source.CreateToken(this.OutputTerminal);
       result.Flags |= TokenFlags.IsIncomplete;
       context.VsLineScanState.TerminalIndex = this.MultilineIndex;
@@ -86,11 +86,11 @@ namespace Irony.Parsing {
       while (!source.EOF()) {
         int firstCharPos;
         if (EndSymbols.Count == 1)
-          firstCharPos = source.Text.IndexOf(EndSymbols[0], source.PreviewPosition);
+          firstCharPos = source.IndexOf(EndSymbols[0], source.PreviewPosition);
         else 
-          firstCharPos = source.Text.IndexOfAny(_endSymbolsFirsts, source.PreviewPosition);
+          firstCharPos = source.IndexOfAny(_endSymbolsFirsts, source.PreviewPosition);
         if (firstCharPos < 0) {
-          source.PreviewPosition = source.Text.Length;
+          source.PreviewPosition = source.Length;
           return null; //indicating error
         }
         //We found a character that might start an end symbol; let's see if it is true.

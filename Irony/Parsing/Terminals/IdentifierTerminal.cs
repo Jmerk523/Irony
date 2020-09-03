@@ -241,12 +241,12 @@ namespace Irony.Parsing {
           details.Error = Resources.ErrInvEscSymbol; // "Invalid escape symbol, expected 'u' or 'U' only."
           return '\0'; 
       }
-      if (source.PreviewPosition + len > source.Text.Length) {
+      if (source.PreviewPosition + len > source.Length) {
         details.Error = Resources.ErrInvEscSeq; // "Invalid escape sequence";
         return '\0';
       }
       source.PreviewPosition++; //move to the first digit
-      string digits = source.Text.Substring(source.PreviewPosition, len);
+      string digits = source.GetText(source.PreviewPosition, len);
       char result = (char)Convert.ToUInt32(digits, 16);
       source.PreviewPosition += len;
       details.Flags |= (int) IdFlagsInternal.HasEscapes;
