@@ -54,16 +54,13 @@ namespace Irony.Parsing {
       Scanner.Reset(); 
     }
 
-    protected void Reset(ParseTree tree, IEnumerable<ParseTreeNode> stack)
+    protected void Reset(ParseTree tree)
     {
       Reset();
       Context.CurrentParseTree = tree;
       Context.ParserStack.Clear();
-      foreach (var node in stack)
-      {
-        Context.ParserStack.Push(node);
-        Context.CurrentParserState = node.State;
-      }
+      Context.ParserStack.Push(tree.Root);
+      Context.CurrentParserState = tree.Root.State;
     }
 
     protected internal virtual void CreateTokenFilters(LanguageData language, TokenFilterList filters, ParsingContext context)

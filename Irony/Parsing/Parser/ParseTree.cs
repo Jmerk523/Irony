@@ -37,7 +37,7 @@ namespace Irony.Parsing {
     //Making ChildNodes property (not field) following request by Matt K, Bill H
     public ParseTreeNodeList ChildNodes {get; private set;}
     public bool IsError;
-    internal ParserState State;      //used by parser to store current state when node is pushed into the parser stack
+    public ParserState State;      //used by parser to store current state when node is pushed into the parser stack
     public object Tag; //for use by custom parsers, Irony does not use it
     public TokenList Comments; //Comments preceding this node
 
