@@ -246,14 +246,23 @@ namespace Irony.Parsing {
 
     // We assume here that the token is a brace (opening or closing)
     private bool CheckBraceToken(Token token) {
-      if (token.Terminal.Flags.IsSet(TermFlags.IsOpenBrace)) {
+      bool isOpen = token.Terminal.Flags.IsSet(TermFlags.IsOpenBrace);
+      if (isOpen && !token.Terminal.Flags.IsSet(TermFlags.IsCloseBrace)) {
         Context.OpenBraces.Push(token);
         return true;
       }
       //it is closing brace; check if we have opening brace in the stack
       var braces = Context.OpenBraces;
       var match = (braces.Count > 0 && braces.Peek().Terminal.IsPairFor == token.Terminal);
-      if (!match) return false;
+      if (!match)
+      {
+        if (isOpen)
+        {
+          Context.OpenBraces.Push(token);
+          return true;
+        }
+        return false;
+      }  
       //Link both tokens, pop the stack and return true
       var openingBrace = braces.Pop();
       openingBrace.OtherBrace = token;

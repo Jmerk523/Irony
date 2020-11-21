@@ -115,7 +115,7 @@ namespace Irony.Parsing {
     public Associativity Associativity = Associativity.Neutral;
 
     public Grammar Grammar { 
-      get { return GrammarData.Grammar; } 
+      get { return GrammarData?.Grammar; } 
     }
     public void SetFlag(TermFlags flag) {
       SetFlag(flag, true);
