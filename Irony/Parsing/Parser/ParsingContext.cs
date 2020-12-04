@@ -76,9 +76,9 @@ namespace Irony.Parsing {
   
     //Internal fields
     internal TokenFilterList TokenFilters = new TokenFilterList();
-    internal TokenStack BufferedTokens = new TokenStack();
+    public TokenStack BufferedTokens = new TokenStack();
     internal IEnumerator<Token> FilteredTokens; //stream of tokens after filter
-    internal TokenStack PreviewTokens = new TokenStack();
+    public TokenStack PreviewTokens = new TokenStack();
     internal ParsingEventArgs SharedParsingEventArgs;
     internal ValidateTokenEventArgs SharedValidateTokenEventArgs;
 
@@ -227,6 +227,19 @@ namespace Irony.Parsing {
       return new SourceSpan(first.Span.Location, last.Span.EndPosition - first.Span.Location.Position);
     }
 
+    public TokenSubList ComputeTokenSubList(int nodeCount)
+    {
+      if (nodeCount == 0)
+        return default;
+      var first = ParserStack[ParserStack.Count - nodeCount];
+      var last = ParserStack.Top;
+      return new TokenSubList(CurrentParseTree.Tokens, first.Tokens.Start, last.Tokens.End - first.Tokens.Start);
+    }
+
+    public TokenSubList ComputeTokenSubList()
+    {
+      return new TokenSubList(CurrentParseTree.Tokens, CurrentParseTree.Tokens.Count - 1, 1);
+    }
 
     #region Expected term set computations
     public StringSet GetExpectedTermSet() {

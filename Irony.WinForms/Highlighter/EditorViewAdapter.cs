@@ -106,7 +106,7 @@ namespace Irony.WinForms.Highlighter {
         var oldData = _data;
         _data = new ViewData(newTree);
         //Now try to figure out tokens that match old Colored tokens
-        if (oldData != null && oldData.Tree != null) {
+        if (oldData != null && oldData.Tree != null && _data.Tree.SourceText != null && oldData.Tree.SourceText != null) {
           DetectAlreadyColoredTokens(oldData.ColoredTokens, _data.Tree.SourceText.Length - oldData.Tree.SourceText.Length);
         }
         _wantsColorize = true;

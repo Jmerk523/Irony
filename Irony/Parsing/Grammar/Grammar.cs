@@ -199,7 +199,7 @@ namespace Irony.Parsing {
     /// <summary>Skips whitespace characters in the input stream. </summary>
     /// <remarks>Override this method if your language has non-standard whitespace characters.</remarks>
     /// <param name="source">Source stream.</param>
-    public virtual void SkipWhitespace(ISourceStream source) {
+    public virtual void SkipWhitespace(ParsingContext context, ISourceStream source) {
       while (!source.EOF()) {
         switch (source.PreviewChar) {
           case ' ':  case '\t':

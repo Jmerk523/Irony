@@ -11,6 +11,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -31,6 +32,54 @@ namespace Irony.Parsing {
 
   public class TokenList : List<Token> {}
   public class TokenStack : Stack<Token> { }
+
+  public struct TokenSubList : IEnumerable<Token>
+  {
+    private readonly TokenList tokens;
+    private readonly int offset;
+
+    public int Count { get; }
+
+    public int Start => offset;
+    public int End => offset + Count;
+
+    public Token this[int index]
+    {
+      get
+      {
+        if (index < 0 || index >= Count)
+        {
+          throw new ArgumentOutOfRangeException(nameof(index));
+        }
+        return tokens[offset];
+      }
+    }
+
+    public TokenSubList(TokenList tokens, int offset, int count)
+    {
+      this.tokens = tokens ?? throw new ArgumentNullException(nameof(tokens));
+      if (offset < 0)
+      {
+        throw new ArgumentOutOfRangeException(nameof(offset));
+      }
+      if (count < 0)
+      {
+        throw new ArgumentOutOfRangeException(nameof(count));
+      }
+      this.offset = offset;
+      Count = count;
+    }
+
+    public IEnumerator<Token> GetEnumerator()
+    {
+      for (int i = 0; i < Count; ++i)
+      {
+        yield return tokens[i + offset];
+      }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  }
 
   //Tokens are produced by scanner and fed to parser, optionally passing through Token filters in between. 
   public partial class Token {

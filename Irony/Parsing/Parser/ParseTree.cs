@@ -29,7 +29,8 @@ namespace Irony.Parsing {
   */
   public class ParseTreeNode {
     public object AstNode;
-    public Token Token; 
+    public Token Token;
+    public TokenSubList Tokens;
     public BnfTerm Term;
     public int Precedence;
     public Associativity Associativity;
@@ -57,6 +58,7 @@ namespace Irony.Parsing {
     public ParseTreeNode(ParseTreeNode clone) : this(clone.State)
     {
       Term = clone.Term;
+      Tokens = clone.Tokens;
     }
 
     public ParseTreeNode(ParserState initialState) : this() {

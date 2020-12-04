@@ -217,7 +217,10 @@ namespace Irony.Parsing {
         token = new Token(_grammar.SyntaxError, token.Location, token.Text,
            string.Format(Resources.ErrUnmatchedCloseBrace, token.Text));
       //Create parser input node
-      Context.CurrentParserInput = new ParseTreeNode(token);
+      Context.CurrentParserInput = new ParseTreeNode(token)
+      {
+        Tokens = Context.ComputeTokenSubList()
+      };
       //attach comments if any accumulated to content token
       if (token.Terminal.Category == TokenCategory.Content) {
         Context.CurrentParserInput.Comments = Context.CurrentCommentTokens;

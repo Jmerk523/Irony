@@ -57,7 +57,7 @@ namespace Irony.Parsing {
       var token = Context.FilteredTokens.Current;
       if (Context.Status == ParserStatus.Previewing)
         Context.PreviewTokens.Push(token);
-      else 
+      else
         Context.CurrentParseTree.Tokens.Add(token);
       return token;
     }
@@ -84,7 +84,8 @@ namespace Irony.Parsing {
         return; 
       }
       //2. Skip whitespace.
-      _grammar.SkipWhitespace(Context.Source);
+      _grammar.SkipWhitespace(Context, Context.Source);
+
       //3. That's the token start, calc location (line and column)
       Context.Source.Position = Context.Source.PreviewPosition;
       //4. Check for EOF

@@ -639,7 +639,7 @@ namespace Irony.GrammarExplorer {
       tvParseTree.SelectedNode = null; //just in case we won't find
       tvAst.SelectedNode = null;
       SelectTreeNode(tvParseTree, LocateTreeNode(tvParseTree.Nodes, p, node => (node.Tag as ParseTreeNode).Span.Location.Position));
-      SelectTreeNode(tvAst, LocateTreeNode(tvAst.Nodes, p, node => (node.Tag as IBrowsableAstNode).Position));
+      SelectTreeNode(tvAst, LocateTreeNode(tvAst.Nodes, p, node => (node.Tag as IBrowsableAstNode)?.Position ?? p));
       txtSource.Focus(); //set focus back to source
     }
 

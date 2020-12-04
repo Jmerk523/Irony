@@ -46,6 +46,7 @@ namespace Irony.Parsing {
       int firstChildIndex = context.ParserStack.Count - childCount;
       var span = context.ComputeStackRangeSpan(childCount);
       var newNode = new ParseTreeNode(Production.LValue, span);
+      newNode.Tokens = context.ComputeTokenSubList(childCount);
       for (int i = 0; i < childCount; i++) {
         var childNode = context.ParserStack[firstChildIndex + i];
         if (childNode.IsPunctuationOrEmptyTransient()) continue; //skip punctuation or empty transient nodes
@@ -118,8 +119,10 @@ namespace Irony.Parsing {
       }
       //Otherwise return an empty transient node; if it is part of the list, the list will skip it
       var span = context.ComputeStackRangeSpan(childCount);
-      return new ParseTreeNode(Production.LValue, span); 
-      
+      return new ParseTreeNode(Production.LValue, span)
+      {
+        Tokens = context.ComputeTokenSubList(childCount)
+      };
     }
   }//class
 
@@ -150,6 +153,7 @@ namespace Irony.Parsing {
       int firstChildIndex = context.ParserStack.Count - childCount;
       var span = context.ComputeStackRangeSpan(childCount);
       var newNode = new ParseTreeNode(Production.LValue, span);
+      newNode.Tokens = context.ComputeTokenSubList(childCount);
       if (childCount > 0) { //if it is not empty production - might happen for MakeStarRule
         var listNode = context.ParserStack[firstChildIndex]; //get the transient list with all members - it is the first child node
         newNode.ChildNodes.AddRange(listNode.ChildNodes);    //copy all list members
