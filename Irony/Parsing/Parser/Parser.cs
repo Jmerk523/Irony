@@ -192,7 +192,10 @@ namespace Irony.Parsing {
         //There's no action for EOF but there's action for NewLine. Let's add newLine token as input, just in case
         // action code wants to check input - it should see NewLine.
         var newLineToken = new Token(_grammar.NewLine, currInput.Token.Location, "\r\n", null);
-        var newLineNode = new ParseTreeNode(newLineToken);
+        var newLineNode = new ParseTreeNode(newLineToken)
+        {
+          Tokens = Context.ComputeTokenSubList()
+        };
         Context.CurrentParserInput = newLineNode;
         return action;
       }//if

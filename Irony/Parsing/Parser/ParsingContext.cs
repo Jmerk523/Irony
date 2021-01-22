@@ -230,7 +230,7 @@ namespace Irony.Parsing {
     public TokenSubList ComputeTokenSubList(int nodeCount)
     {
       if (nodeCount == 0)
-        return default;
+        return new TokenSubList(CurrentParseTree.Tokens, ParserStack.Top.Tokens.End, 0);
       var first = ParserStack[ParserStack.Count - nodeCount];
       var last = ParserStack.Top;
       return new TokenSubList(CurrentParseTree.Tokens, first.Tokens.Start, last.Tokens.End - first.Tokens.Start);
